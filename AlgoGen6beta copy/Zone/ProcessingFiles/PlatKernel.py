@@ -44,7 +44,7 @@ def activatory_code():
     )
     print(c)
     return c
-def activation(age, name="Usero", gender="N/E", BotReference="Algo", mode="Chat",lang = "EN-US", country = None, voice_trained = False, doc=datetime.today().strftime('%Y-%m-%d')):
+def activation(age, name="Usero", gender="N/E", BotReference="Algo", mode="Chat",lang = "EN-US", country = None, voice_trained = False, AI_api_key=None, doc=datetime.today().strftime('%Y-%m-%d')):
     config_path = Path("config.json")
     if not config_path.exists():
         config = {
@@ -62,6 +62,7 @@ def activation(age, name="Usero", gender="N/E", BotReference="Algo", mode="Chat"
             "Ulang" : lang,
             "Ucountry" : country,
             "Ubotreference": BotReference,
+            "AI_api_key": AI_api_key,
             "Uvoice_trained": voice_trained,
         }
 

@@ -7,6 +7,8 @@ import deepl
 import csv
 import webrtcvad
 import pyaudio
+import requests
+import pycountry
 import subprocess
 import collections
 import wave
@@ -26,6 +28,14 @@ from Kernel_F.user import userbase
 User = userbase()
 # Find the exact path to the model
 modelW = None
+
+COLOR_BLUE         = "\033[34m"
+COLOR_YELLOW       = "\033[33m"
+COLOR_ORANGE       = "\033[38;5;208m"
+COLOR_GREEN        = "\033[32m"
+COLOR_INFO         = "\033[96m"
+COLOR_LIGHT_BLUE   = "\033[94m"
+COLOR_RESET        = "\033[0m"
 
 def set_modelW(model):
     global modelW
@@ -320,6 +330,88 @@ async def main(infov, UnameV, entryV, intro_phraseV, purpose, language):
         await tts.save("output.mp3")
     except Exception as e:
         print(f"⚠️ Ошибка TTS сохранения: {e}")
+def config_restore():
+    for attempt in range(10):
+        try:
+            time.sleep(1)
+            Uage = int(input(f"\n\n{COLOR_INFO}ℹ️ \n\nFirst of all, could you type your age? Please be honest, this does affect your usage experience (No limitations): {COLOR_RESET}"))
+            if 0 < Uage <= 140:
+                break
+            else:
+                print(f"{COLOR_ORANGE}❌ Please enter a realistic age (1-140).{COLOR_RESET}")
+        except ValueError:
+            print(f"{COLOR_ORANGE}❌ That's not a number, digits only.{COLOR_RESET}")
+    else:
+        print(f"{COLOR_ORANGE}❌ Access to program restricted.{COLOR_RESET}")
+        quit()
+    time.sleep(1)
+    Uname = input(f"{COLOR_INFO}ℹ️ {'Okay! Now I need your name' if Uage <= 18 else 'Please type your name:'} {COLOR_RESET}")
+    time.sleep(1)
+    Ugender = input(f"{COLOR_INFO}ℹ️ {Uname}, {'what is your gender/sex? (Male / Female)' if Uage <= 18 else 'please enter your gender/sex (Male / Female):'} {COLOR_RESET}")
+    time.sleep(1)
+    Ubotreference = input(f"{COLOR_INFO}ℹ️ {'Okay! Please give me any name you want:' if Uage <= 18 else 'Please say, how do you want to call this bot?'} {COLOR_RESET}")
+    time.sleep(1)
+    Umode = input(f"{COLOR_INFO}ℹ️ {'Okay! Now type Chat if you would like to chat with the bot or Voice if you would like to talk using voice:' if Uage <= 18 else 'Please type Chat if you would like to chat or Voice if you would like to talk:'} {COLOR_RESET}")
+    print("")
+    for attempt in range(3):
+        AI_api_key = input(f"{COLOR_INFO}ℹ️ {Uname}, {'Enter your OpenAI private API key: ' if Uage <= 18 else 'Enter your private OpenAI API key: '} {COLOR_RESET}")
+        if len(AI_api_key) >=100:
+            time.sleep(1)
+            print("Wait untill the Algo validates your API key...")
+            import openai
+            try:
+                response = openai.ChatCompletion.create(
+                    model="gpt-4.1-mini-2025-04-14",
+                    messages=[
+                        {"role": "system", "content": f"Say only 'CHECKED'"},
+                        {"role": "user", "content": "Say 'CHECKED"},
+                    ]
+                )
+                bash_command = response["choices"][0]["message"]["content"]
+                if bash_command == "CHECKED":
+                    break
+                else:             
+                    print(f"{COLOR_ORANGE}This API key has responded{COLOR_RESET}")
+                    continue
+            except Exception as e:
+                print(f"{COLOR_ORANGE}❌ Could not connect to the OpenAI api system.Turn on the vpn if you are in the area of local GPT restrictions or check the API account balance{e}{COLOR_RESET}")
+                continue
+        else:
+            print(f"{COLOR_ORANGE}This is not the API key. Original OpenAI API key you can purchase at {COLOR_GREEN} https://platform.openai.com/docs/overview {COLOR_RESET}.Free tokens are unavailable at the moment :({COLOR_RESET}")
+    else:
+        AI_api_key = None
+    import locale
+    time.sleep(1)
+    try:
+        lang_code, _ = locale.getlocale()
+        if lang_code:
+            Ulang = lang_code.replace("_", "-").upper()
+        else:
+            Ulang = "EN-US"
+    except:
+        pass
+    tellhim("I have tried to identify your language automatically using your system language. If it is wrong - dont worry, say anything to algo on your native language and Algo will adapt.")
+    time.sleep(1)
+    try:
+        data = requests.get('https://ipinfo.io/json').json()
+        country_code = data.get('country')
+        if country_code:
+            country_obj = pycountry.countries.get(alpha_2=country_code)
+            if country_obj:
+                Ucountry = country_obj.name
+            else:
+                Ucountry = None
+        else:
+            Ucountry = None
+    except:
+        Ucountry = None
+    import PlatKernel
+    creation = PlatKernel.activation(Uage, Uname, Ugender, Ubotreference, Umode, Ulang, Ucountry, AI_api_key, False)
+    if creation == "success":
+        print(f"{COLOR_GREEN}✅ Program package installation started!{COLOR_RESET}")
+    else:
+        print(f"{COLOR_INFO}ℹ️ Oh oh, the program files might be broken... default settings will be applied. Installation continues...{COLOR_RESET}")
+    return "S"
 
 def JSON_config_changer(parameter, value):
     try:

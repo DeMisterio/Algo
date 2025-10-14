@@ -84,21 +84,13 @@ def generate_user_agent():
     return f"Mozilla/5.0 ({platform}) {browser}"
 
 if not config_path.exists():
-    config = {"Debug": False,
-    "System": "Darwin",
-    "Version": "Darwin Kernel Version 24.5.0: Tue Apr 22 19:54:33 PDT 2025; root:xnu-11417.121.6~2/RELEASE_ARM64_T8122",
-    "Machine": "arm64",
-    "Release": "24.5.0",
-    "Node Name": "Denis-iMac.local",
-    "RAC": True,
-    "Uage": 18,
-    "Uname": "User",
-    "Ugender": "Male",
-    "Umode" : "Voice",
-    "Ulang" : "eng",
-    "Ubotreference": "Algo"}
-    with open(config_path,"w") as file:
-        json.dump(config, file, indent=4)
+    CommonUtil.tellhim("Algo has detected that the config file has been removed. Please reenter the information needed to restore the config file now.")
+    config = CommonUtil.config_restore()
+    if config == "S":
+        pass
+    else:
+        CommonUtil.tellhim("Seems like Algo could not restore the config file, algo cannot continue running. Reboot the Algo for entering the DEBUG algo mode.")
+    config = CommonUtil.safe_load_json("config.json")
     Debugstat = config["Debug"]
     print("JSON config wile installated")
 else:

@@ -379,9 +379,39 @@ def init():
     time.sleep(1)
     Umode = input(f"{COLOR_INFO}ℹ️ {'Okay! Now type Chat if you would like to chat with the bot or Voice if you would like to talk using voice:' if Uage <= 18 else 'Please type Chat if you would like to chat or Voice if you would like to talk:'} {COLOR_RESET}")
     print("")
+    for attempt in range(3):
+        AI_api_key = input(f"{COLOR_INFO}ℹ️ {Uname}, {'Enter your OpenAI private API key: ' if Uage <= 18 else 'Enter your private OpenAI API key: '} {COLOR_RESET}")
+        if len(AI_api_key) >=100:
+            time.sleep(1)
+            print("Wait untill the Algo validates your API key...")
+            import openai
+            try:
+                response = openai.ChatCompletion.create(
+                    model="gpt-4.1-mini-2025-04-14",
+                    messages=[
+                        {"role": "system", "content": f"Say only 'CHECKED'"},
+                        {"role": "user", "content": "Say 'CHECKED"},
+                    ]
+                )
+                bash_command = response["choices"][0]["message"]["content"]
+                if bash_command == "CHECKED":
+                    break
+                else:             
+                    print(f"{COLOR_ORANGE}This API key has responded{COLOR_RESET}")
+                    continue
+            except Exception as e:
+                print(f"{COLOR_ORANGE}❌ Could not connect to the OpenAI api system.Turn on the vpn if you are in the area of local GPT restrictions or check the API account balance{e}{COLOR_RESET}")
+                continue
+        else:
+            print(f"{COLOR_ORANGE}This is not the API key. Original OpenAI API key you can purchase at {COLOR_GREEN} https://platform.openai.com/docs/overview {COLOR_RESET}.Free tokens are unavailable at the moment :({COLOR_RESET}")
+    else:
+        AI_api_key = None
+
     time.sleep(1)
 
-    creation = plat.activation(Uage, Uname, Ugender, Ubotreference, Umode, Ulang, Ucountry, False)
+    time.sleep(1)
+
+    creation = plat.activation(Uage, Uname, Ugender, Ubotreference, Umode, Ulang, Ucountry, AI_api_key, False)
     if creation == "success":
         print(f"{COLOR_GREEN}✅ Program package installation started!{COLOR_RESET}")
     else:

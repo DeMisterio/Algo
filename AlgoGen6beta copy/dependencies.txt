@@ -1,41 +1,39 @@
-# Основные пакеты
-rasa
-faster-whisper
+# Conversational core
 openai==0.27.8
+rasa>=3.6.0
+requests>=2.31.0
+watchdog>=3.0.0
 
-# Пакеты с фиксированными версиями для совместимости с Python 3.10
-pycountry==22.3.5
-rapidfuzz==3.13.0
+
+# Speech, audio & NLP stack
+tensorflow-macos==2.12.0       # use tensorflow-macos==2.12.0 on Apple Silicon
+keras==2.12.0
+faster-whisper>=0.10.0
+sentence-transformers==2.2.2
+spacy==3.6.1
 langdetect==1.0.7
-
-# Остальные нужные библиотеки
-webrtcvad==2.0.10
-pyaudio
-modelscope
-spacy
-lxml_html_clean
-pygame
-sentence_transformers==2.2.2
-edge_tts==7.2.0
+langcodes==3.3.0
+rapidfuzz==3.13.0
+pycountry==22.3.5
 deepl==1.22.0
-playsound==1.2.2
+edge-tts==7.2.0
+pyaudio>=0.2.13
+webrtcvad==2.0.10
+librosa==0.10.1
+soundfile==0.12.1
+# TensorFlow 2.12 wheels require numpy < 1.24; keep aligned with SciPy 1.11.
+numpy==1.23.5
+scipy==1.11.0
+pygame>=2.1.3
+
+# Data & automation utilities
 pandas==1.5.3
 dateparser==1.1.8
+gdown>=4.7.1
+modelscope>=1.9.5
 beautifulsoup4==4.12.2
-wikipedia==1.4.0
 readability-lxml==0.8.1
 playwright==1.34.0
 fake-useragent==1.5.1
-
-# Аудио и ML зависимости
-librosa==0.10.1
-numpy==1.26.0
-scipy==1.11.0
-soundfile==0.12.1
-audioread==3.0.0
-huggingface_hub==0.13.3
-
-# Для безопасности обнови setuptools, wheel, pip в начале
-setuptools>=68.0.0
-wheel>=0.40.0
-pip>=23.1.2
+wikipedia==1.4.0
+sympy==1.12

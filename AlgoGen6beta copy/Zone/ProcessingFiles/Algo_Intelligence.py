@@ -76,7 +76,8 @@ def task_certifier(User_message, agent):
 
 
 # 🔐 Рекомендуется: API ключ читается из переменной среды или .env
-openai.api_key = "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"
+Key = CommonUtil.read_key_from_JSON("AI_api_key")
+openai.api_key = Key
 Ubotreference = CommonUtil.read_key_from_JSON("Ubotreference")
 UserOS = CommonUtil.read_key_from_JSON("System")
 OS_version = CommonUtil.read_key_from_JSON("Release")

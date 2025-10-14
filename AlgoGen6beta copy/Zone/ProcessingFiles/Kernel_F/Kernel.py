@@ -15,7 +15,6 @@ from tensorflow import keras
 from keras import layers, models
 import CommonUtil
 import FileManagement
-import Ai_Engine
 import PlanCrafting
 import searching_engine
 import Algo_Intelligence
@@ -29,9 +28,9 @@ import WOD
 import re
 import traceback
 import numpy as np
-import json
 import spacy
 import warnings
+import locale
 from user import userbase
 warnings.filterwarnings("ignore", message="FP16 is not supported on CPU; using FP32 instead")
 import logging
@@ -42,6 +41,14 @@ logging.getLogger("rasa.nlu").setLevel(logging.WARNING)
 logging.getLogger("rasa.core").setLevel(logging.WARNING)
 logging.getLogger("rasa.shared").setLevel(logging.WARNING)
 log_level = logging.DEBUG if os.getenv("DEBUG_RASA") else logging.WARNING
+
+COLOR_BLUE         = "\033[34m"
+COLOR_YELLOW       = "\033[33m"
+COLOR_ORANGE       = "\033[38;5;208m"
+COLOR_GREEN        = "\033[32m"
+COLOR_INFO         = "\033[96m"
+COLOR_LIGHT_BLUE   = "\033[94m"
+COLOR_RESET        = "\033[0m"
 from pathlib import Path
 try:
     nlp = spacy.load("en_core_web_md")
@@ -64,6 +71,8 @@ def rasa_loader():
         OSError
     agent = Agent.load(RASA_agent_path)
     print("Agent loaded successfully.")
+
+
 def config_initializer():
     global cashe_list, Enclave_completing, decidion_completed, usednickname,Debugstat, Umode, Uname, Ubotreference, Uage, Trained, Ucountry
     cashe_list = []
@@ -72,28 +81,14 @@ def config_initializer():
     usednickname = False 
     config_path = Path("config.json")
     if not config_path.exists():
-        config = {"Udebug": False,
-        "System": "Darwin",
-        "Version": "Darwin Kernel Version 24.5.0: Tue Apr 22 19:54:33 PDT 2025; root:xnu-11417.121.6~2/RELEASE_ARM64_T8122",
-        "Machine": "arm64",
-        "Release": "24.5.0",
-        "Node Name": "Denis-iMac.local",
-        "RAC": True,
-        "Uage": 18,
-        "Uname": "User",
-        "Ugender": "Male",
-        "Umode" : "Voice",
-        "Ulang" : "EN-US",
-        "Ucountry": CommonUtil.get_users_country(),
-        "Ubotreference": "Algo",
-        "Uvoice_trained": False}
-        try:
-            with open(config_path,"w") as file:
-                json.dump(config, file, indent=4)
-        except:
-            import json
-            with open(config_path,"w") as file:
-                json.dump(config, file, indent=4)
+        CommonUtil.tellhim("Algo has detected that the config file has been removed. Please reenter the information needed to restore the config file now.")
+        config = CommonUtil.config_restore()
+        if config == "S":
+            pass
+        else:
+            CommonUtil.tellhim("Seems like Algo could not restore the config file, algo cannot continue running. Reboot the Algo for entering the DEBUG algo mode.")
+            quit()
+        config = CommonUtil.safe_load_json("config.json")
         Debugstat = config["Udebug"]
         Umode = config["Umode"]
         Uname = config["Uname"]
@@ -116,6 +111,8 @@ def config_initializer():
         except FileNotFoundError:
             from PlatKernel import activation
             activation()
+
+
 def listen_vad_once():
     SAMPLE_RATE = 16000
     CLIP_DURATION = 1.0
@@ -653,15 +650,6 @@ def task_compiller(task_to_start, UMC, SpotCommand=None):
         
         if not Enclave_completing:
             thestart()
-    elif task_to_start == "processPrediction":
-        if CommonUtil.read_key_from_JSON("Umode") != 'Voice':
-            Ai_Engine.processPrediction()
-            if not Enclave_completing:
-                thestart()
-        else:
-            CommonUtil.tellhim("Sorry, but you cant use the function of prediction based on linear data in the Voice mode, please, switch to chat mode to use this function.")
-            if not Enclave_completing:
-                thestart()
     elif task_to_start == "NameSet":
         if CommonUtil.read_key_from_JSON("Umode") != 'Voice':
             FileRenamingStatus, message = FileManagement.name_giver(UMC)

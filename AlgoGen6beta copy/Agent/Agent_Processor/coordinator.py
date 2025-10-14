@@ -3,7 +3,6 @@ import subprocess
 from kernel_communicator import Communicator
 from parser import Parser
 from AIprocessor import analyser
-import pync
 from AIprocessor import Project
 from applier import ProjectBuilder
 from back_up_engine import BackUper
@@ -31,7 +30,9 @@ class Coordinator:
             'Colclude': lambda conclusion: self.Programm_BackUpper.set_a_conclusion(conclusion)
         }
     def notify(self,text):
-        pync.notify(text, title="Your Agent")
+        title = "Your Agent"
+        script = f'display notification "{text}" with title "{title}"'
+        subprocess.run(["osascript", "-e", script])
     def ask_mac(self, message: str) -> bool | None:
         """Нативное macOS окно подтверждения через AppleScript"""
         script = f'display dialog "{message}" with title "Confirmation" buttons {{"Cancel", "OK"}} default button "OK"'
