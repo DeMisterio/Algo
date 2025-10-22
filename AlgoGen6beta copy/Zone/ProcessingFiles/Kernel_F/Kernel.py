@@ -67,6 +67,8 @@ def rasa_loader():
         MD_folder = project_root / "AImodels"
         RASAmodel_folder = MD_folder / "INDENT_AI"
         RASA_agent_path = RASAmodel_folder / "models"
+        if Debugstat is True:
+            print(RASA_agent_path)
     except:
         OSError
     agent = Agent.load(RASA_agent_path)
@@ -588,7 +590,7 @@ def replylogic():
             else:
                 task_compiller(main_intent, text)
         else:
-            if probability > 0.95:
+            if probability > 0.96:
                 task_compiller(main_intent, text)
             else:
                 task_compiller('searching', text)

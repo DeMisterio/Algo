@@ -18,7 +18,15 @@ COLOR_RESET        = "\033[0m"
 
 # Rainbow gradient for the unboxing animation (red, yellow, green, blue, violet, cyan)
 RAINBOW = ["\033[31m", "\033[33m", "\033[32m", "\033[34m", "\033[35m", "\033[36m"]
-
+def Check_INTERNET_CONNECTION(host='8.8.8.8', port=53, timeout=3):
+    try:
+        import socket
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        return True
+    except Exception as e:
+        print(f"⚠️ Ошибка проверки соединения: {e}")
+        return False
 def rainbow_text(text):
     out = ""
     for i, ch in enumerate(text):
@@ -379,34 +387,48 @@ def init():
     time.sleep(1)
     Umode = input(f"{COLOR_INFO}ℹ️ {'Okay! Now type Chat if you would like to chat with the bot or Voice if you would like to talk using voice:' if Uage <= 18 else 'Please type Chat if you would like to chat or Voice if you would like to talk:'} {COLOR_RESET}")
     print("")
-    for attempt in range(3):
-        AI_api_key = input(f"{COLOR_INFO}ℹ️ {Uname}, {'Enter your OpenAI private API key: ' if Uage <= 18 else 'Enter your private OpenAI API key: '} {COLOR_RESET}")
-        if len(AI_api_key) >=100:
-            time.sleep(1)
-            print("Wait untill the Algo validates your API key...")
-            import openai
-            try:
-                response = openai.ChatCompletion.create(
-                    model="gpt-4.1-mini-2025-04-14",
-                    messages=[
-                        {"role": "system", "content": f"Say only 'CHECKED'"},
-                        {"role": "user", "content": "Say 'CHECKED"},
-                    ]
-                )
-                bash_command = response["choices"][0]["message"]["content"]
-                if bash_command == "CHECKED":
-                    break
-                else:             
-                    print(f"{COLOR_ORANGE}This API key has responded{COLOR_RESET}")
+    if Check_INTERNET_CONNECTION() == True:
+        for attempt in range(3):
+            AI_api_key = input(f"{COLOR_INFO}ℹ️ {Uname}, {'Enter your OpenAI private API key: ' if Uage <= 18 else 'Enter your private OpenAI API key: '} {COLOR_RESET}")
+            if len(AI_api_key) >=100:
+                time.sleep(1)
+                print("Wait untill the Algo validates your API key...")
+                import openai
+                openai.api_key = AI_api_key
+                try:
+                    response = openai.ChatCompletion.create(
+                        model="gpt-4.1-mini-2025-04-14",
+                        messages=[
+                            {"role": "system", "content": f"Say only 'CHECKED'. "},
+                            {"role": "user", "content": "Say 'CHECKED'"},
+                        ]
+                    )
+                    bash_command = response["choices"][0]["message"]["content"]
+                    if bash_command == "CHECKED" or bash_command == "'CHECKED'":
+                        response = openai.ChatCompletion.create(
+                        model="gpt-4.1-mini-2025-04-14",
+                        messages=[
+                            {"role": "system", "content": f"Your name is {Ubotreference}. Introduce your self to the {Uname}: you are {Ubotreference} intelligence, you will be assisting the user for comples tasks while programm usage."},
+                            {"role": "user", "content": "Introduce yourself."},
+                        ]
+                        )
+                        greating = response["choices"][0]["message"]["content"]
+                        print(f"\n\n{Ubotreference}: {greating}\n\n")
+                        break
+                    else:             
+                        print(f"{COLOR_ORANGE}This API key has responded{COLOR_RESET}")
+                        continue
+                except Exception as e:
+                    print(f"{COLOR_ORANGE}❌ Could not connect to the OpenAI api system.Turn on the vpn if you are in the area of local GPT restrictions or check the API account balance{e}{COLOR_RESET}")
                     continue
-            except Exception as e:
-                print(f"{COLOR_ORANGE}❌ Could not connect to the OpenAI api system.Turn on the vpn if you are in the area of local GPT restrictions or check the API account balance{e}{COLOR_RESET}")
-                continue
+            else:
+                print(f"{COLOR_ORANGE}This is not the API key. Original OpenAI API key you can purchase at {COLOR_GREEN} https://platform.openai.com/docs/overview {COLOR_RESET}.Free tokens are unavailable at the moment :({COLOR_RESET}")
+        
         else:
-            print(f"{COLOR_ORANGE}This is not the API key. Original OpenAI API key you can purchase at {COLOR_GREEN} https://platform.openai.com/docs/overview {COLOR_RESET}.Free tokens are unavailable at the moment :({COLOR_RESET}")
+            AI_api_key = None
     else:
+        print("Algo cant connect to the internet. You will be asked to enter API key after connection.")
         AI_api_key = None
-
     time.sleep(1)
 
     time.sleep(1)

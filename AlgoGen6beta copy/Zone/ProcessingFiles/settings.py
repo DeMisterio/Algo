@@ -16,7 +16,7 @@ class Settings:
             5: f"BOTREFERENCE: {CommonUtil.read_key_from_JSON('Ubotreference')}",
             6: f"DEBUG: ({CommonUtil.read_key_from_JSON('Udebug')}) or {'true' if CommonUtil.read_key_from_JSON('Udebug') == 'false' else 'false'} ",
             7: f"VOICEMODEL: ({CommonUtil.read_key_from_JSON('Uvoicemodel')} or {'light' if CommonUtil.read_key_from_JSON('Uvoicemodel') == 'big' else 'big'})",
-            8: f"AI_api_key: {CommonUtil.read_key_from_JSON("AI_api_key")}"
+            8: f"AI_api_key: {CommonUtil.read_key_from_JSON('AI_api_key')}"
         }
 
     def menu_show(self):

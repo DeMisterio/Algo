@@ -4,6 +4,7 @@ import CommonUtil
 import openai
 from Kernel_F.user import userbase
 User = userbase()
+import shutil
 
 
 def initializer(User_prompt):
@@ -72,28 +73,20 @@ def initializer(User_prompt):
         f.write(readme_content)
 
     # create the Agent_Processor subfolder inside the agent folder
-    processor_folder_path = os.path.join(agent_folder_path, "Agent_Processor")
-    os.makedirs(processor_folder_path, exist_ok=True)
-
+    # processor_folder_path = os.path.join(agent_folder_path, "Agent_Processor")
+    # os.makedirs(processor_folder_path, exist_ok=True)
+    from pathlib import Path
+    script_dir = Path(__file__).parent
+    script_dir = script_dir.parent
+    MD_folder = script_dir/ "Agent"
+    source_Agent_path = MD_folder / "Agent_Processor"
+    shutil.copytree(source_Agent_path, agent_folder_path, dirs_exist_ok=True)
+    processor_folder_path = agent_folder_path / "Agent_Processor"
     # dummy content for processor files
-    dummy_code = 'code = """\n# Insert your code here\n"""'
-
-    # list of processor files to be created
-    processor_files = [
-        "parser.py",
-        "coordinator.py",
-        "AIprocessor.py",
-        "kernel_communicator.py",
-        "back_up_engine.py"
-    ]
-
+    
     # create each processor file with dummy content
-    for file_name in processor_files:
-        file_path = os.path.join(processor_folder_path, file_name)
-        with open(file_path, "w") as f:
-            f.write(dummy_code)
     # add the Agent_instructions.txt file with content from the variable 'instructions_text'
-    instructions_path = os.path.join(processor_folder_path, "Agent_instructions.txt")
+    instructions_path = os.path.join(processor_folder_path, "instruction.txt")
     with open(instructions_path, "w") as f:
         f.write(instructions_text)
     CommonUtil.tellhim(f"Your agent is now ready at your Desktop!\n Move into the folder of your project and say\n\n 'Activate my {agent_name} agent'\n\n for the initialisation!")
