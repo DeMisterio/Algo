@@ -98,7 +98,7 @@ def Commander(Indent, prompt):
             
             url = "https://api.deepseek.com/v1/chat/completions"
             headers = {
-                "Authorization": "Bearer sk-9a23db8b643f44ddb4335c85aac9f9d7",  # Замени на свой ключ
+                "Authorization": "",  # Замени на свой ключ
                 "Content-Type": "application/json"
             }
             data = {

@@ -16,7 +16,7 @@ class analyser():
         self.ProjectStruct = ProjectStruct
         self.ProjectData = ProjectData
     def read_unswer(self, EXTRAinstruction, signal, ProjectModel):
-        openai.api_key = "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"
+        openai.api_key = ""
         response = openai.ChatCompletion.create(
             model=ProjectModel,
             messages=[
